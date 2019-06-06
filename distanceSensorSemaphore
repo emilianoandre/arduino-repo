@@ -1,0 +1,91 @@
+int ledPinVerde = 11; // LED conectado al pin digital 13
+int ledPinAmarillo = 10;
+int ledPinRojo = 9;
+int delayTimeChange = 1500;
+int delayTimeLight = 10;
+
+const int echoPin = 5;
+const int triggerPin = 6;
+long duration, distanceCm;
+
+void setup() {
+  // Pins
+  pinMode (ledPinVerde, OUTPUT); // establece el pin digital como salida
+  pinMode (ledPinAmarillo, OUTPUT);
+  pinMode (ledPinRojo, OUTPUT);
+
+  // Sound
+  Serial.begin(9600);
+  pinMode(triggerPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+  /*
+  // put your main code here, to run repeatedly:
+  for (int i = 0; i <= 255; i++) {
+    analogWrite(ledPinVerde, i);
+    delay(delayTimeLight);
+  }
+  
+  // Switch
+  delay(delayTimeChange);               // Espera un segundo
+  for (int i = 255; i >= 0; i--) {
+    analogWrite(ledPinVerde, i);
+    delay(delayTimeLight);
+  }
+  for (int i = 0; i <= 255; i++) {
+    analogWrite(ledPinAmarillo, i);
+    delay(delayTimeLight);
+  }
+  
+  // Switch
+  delay(delayTimeChange);               // Espera por un segundo
+  for (int i = 255; i >= 0; i--) {
+    analogWrite(ledPinAmarillo, i);
+    delay(delayTimeLight);
+  }
+  for (int i = 0; i <= 255; i++) {
+    analogWrite(ledPinRojo, i);
+    delay(delayTimeLight);
+  }
+  
+  delay(delayTimeChange);               // Espera por un segundo
+  for (int i = 255; i >= 0; i--) {
+    analogWrite(ledPinRojo, i);
+    delay(delayTimeLight);
+  }*/
+  
+  // Sonar
+  int cm = ping(triggerPin, echoPin);
+  Serial.print("Distancia: ");
+  Serial.println(cm);
+  delay(500);
+  
+  /*if (cm < 10) {
+    digitalWrite(ledPinRojo, HIGH);
+    digitalWrite(ledPinAmarillo, LOW);
+    digitalWrite(ledPinVerde, LOW);
+  } else*/ if (cm > 10 && cm < 20) {
+    digitalWrite(ledPinRojo, LOW);
+    digitalWrite(ledPinAmarillo, HIGH);
+    digitalWrite(ledPinVerde, LOW);
+  } else {
+    digitalWrite(ledPinRojo, LOW);
+    digitalWrite(ledPinAmarillo, LOW);
+    digitalWrite(ledPinVerde, HIGH);
+  }
+}
+
+int ping(int triggerPin, int echoPin) {
+   digitalWrite(triggerPin, LOW);  //para generar un pulso limpio ponemos a LOW 4us
+   delayMicroseconds(4);
+   digitalWrite(triggerPin, HIGH);  //generamos Trigger (disparo) de 10us
+   delayMicroseconds(10);
+   digitalWrite(triggerPin, LOW);
+
+   duration = pulseIn(echoPin, HIGH);  //medimos el tiempo entre pulsos, en microsegundos
+
+   distanceCm = duration * 10 / 292/ 2;   //convertimos a distancia, en cm
+   return distanceCm;
+}
